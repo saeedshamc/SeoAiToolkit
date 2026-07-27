@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SEO AI Toolkit — رصد و تحلیل هوشمند سئو</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">◎</span>
+      <div class="brand-text">
+        <strong>SEO AI Toolkit</strong>
+        <small>رصد بدون کلیک، تحلیل با داده واقعی</small>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="dashboard">
+        <span class="nav-num">01</span> داشبورد رتبه‌ها
+      </button>
+      <button class="nav-item" data-view="keywords">
+        <span class="nav-num">02</span> کلمات کلیدی
+      </button>
+      <button class="nav-item" data-view="competitor">
+        <span class="nav-num">03</span> تحلیل رقبا
+      </button>
+      <button class="nav-item" data-view="meta">
+        <span class="nav-num">04</span> بهینه‌سازی متا
+      </button>
+      <button class="nav-item" data-view="settings">
+        <span class="nav-num">05</span> تنظیمات و اتصال
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">در حال بررسی اتصال…</span>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- داشبورد -->
+    <section class="view active" id="view-dashboard">
+      <header class="view-head">
+        <h1>داشبورد رتبه‌ها</h1>
+        <p>آخرین وضعیت کلمات کلیدی بر اساس داده رسمی Google Search Console.</p>
+      </header>
+
+      <div class="toolbar">
+        <button class="btn btn-primary" id="syncBtn">همگام‌سازی از Search Console</button>
+        <span class="hint" id="syncHint">آخرین همگام‌سازی: —</span>
+      </div>
+
+      <div class="card chart-card">
+        <canvas id="rankChart" height="90"></canvas>
+      </div>
+
+      <div class="card">
+        <table class="data-table" id="rankTable">
+          <thead>
+            <tr>
+              <th>کلمه کلیدی</th>
+              <th>موقعیت</th>
+              <th>کلیک</th>
+              <th>نمایش</th>
+              <th>CTR</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="empty-state" id="rankEmpty">هنوز داده‌ای همگام‌سازی نشده. روی «همگام‌سازی» بزنید.</p>
+      </div>
+    </section>
+
+    <!-- کلمات کلیدی -->
+    <section class="view" id="view-keywords">
+      <header class="view-head">
+        <h1>کلمات کلیدی تحت رصد</h1>
+        <p>فقط کلمات کلیدی که اینجا اضافه می‌کنید در همگام‌سازی و نمودار دیده می‌شوند. اگر لیست خالی باشد، همه کلمات از Search Console می‌آیند.</p>
+      </header>
+
+      <div class="card">
+        <form class="inline-form" id="addKeywordForm">
+          <input type="text" id="keywordInput" placeholder="مثال: بهترین متخصص قلب بروکسل" />
+          <button type="submit" class="btn btn-primary">افزودن</button>
+        </form>
+        <ul class="keyword-list" id="keywordList"></ul>
+        <p class="empty-state" id="keywordEmpty">کلمه کلیدی‌ای اضافه نشده.</p>
+      </div>
+    </section>
+
+    <!-- تحلیل رقبا -->
+    <section class="view" id="view-competitor">
+      <header class="view-head">
+        <h1>تحلیل رقابتی محتوا</h1>
+        <p>محتوای صفحه شما و رقیب واکشی و توسط Claude مقایسه می‌شود — بدون هیچ کلیک شبیه‌سازی‌شده.</p>
+      </header>
+
+      <div class="card">
+        <form class="stack-form" id="competitorForm">
+          <label>آدرس صفحه شما
+            <input type="url" name="myUrl" placeholder="https://capis.be/..." required />
+          </label>
+          <label>آدرس صفحه رقیب
+            <input type="url" name="competitorUrl" placeholder="https://competitor.com/..." required />
+          </label>
+          <label>کلمه کلیدی هدف (اختیاری)
+            <input type="text" name="targetKeyword" placeholder="مثال: جراحی قلب" />
+          </label>
+          <button type="submit" class="btn btn-primary">اجرای تحلیل</button>
+        </form>
+      </div>
+
+      <div class="card result-card" id="competitorResult" hidden></div>
+    </section>
+
+    <!-- بهینه‌سازی متا -->
+    <section class="view" id="view-meta">
+      <header class="view-head">
+        <h1>بهینه‌سازی عنوان و توضیحات متا</h1>
+        <p>یک آدرس بدهید تا Claude بر اساس محتوای واقعی صفحه، پیشنهاد بهبود بدهد.</p>
+      </header>
+
+      <div class="card">
+        <form class="stack-form" id="metaForm">
+          <label>آدرس صفحه
+            <input type="url" name="url" placeholder="https://capis.be/..." required />
+          </label>
+          <label>کلمه کلیدی هدف (اختیاری)
+            <input type="text" name="targetKeyword" placeholder="مثال: کاردیولوژی بروکسل" />
+          </label>
+          <button type="submit" class="btn btn-primary">دریافت پیشنهاد</button>
+        </form>
+      </div>
+
+      <div class="card result-card" id="metaResult" hidden></div>
+    </section>
+
+    <!-- تنظیمات -->
+    <section class="view" id="view-settings">
+      <header class="view-head">
+        <h1>تنظیمات و اتصال</h1>
+        <p>این ابزار به‌صورت محلی روی سیستم شما اجرا می‌شود. کلیدها فقط در فایل <code>.env</code> شما ذخیره می‌شوند.</p>
+      </header>
+
+      <div class="card settings-card" id="settingsCard">
+        <div class="setting-row">
+          <div>
+            <strong>Google Search Console</strong>
+            <p>وضعیت اتصال سرویس‌اکانت گوگل</p>
+          </div>
+          <span class="badge" id="gscBadge">—</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <strong>Claude API</strong>
+            <p>وضعیت کلید Anthropic برای تحلیل‌ها</p>
+          </div>
+          <span class="badge" id="aiBadge">—</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <strong>سایت متصل</strong>
+            <p>آدرسی که در GSC_SITE_URL تنظیم شده</p>
+          </div>
+          <span class="badge badge-muted" id="siteBadge">—</span>
+        </div>
+        <button class="btn btn-secondary" id="testGscBtn">تست اتصال Search Console</button>
+        <pre class="log-box" id="settingsLog"></pre>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
